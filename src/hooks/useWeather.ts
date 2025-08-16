@@ -7,7 +7,16 @@ export const WEATHER_KEYS={
 	forecast:(coordinates:Coordinates)=>['forecast',coordinates] as const,
 	location:(coordinates:Coordinates)=>['location',coordinates] as const,
 	search:(query:string)=>['location-search',query] as const,
+	pollution:(coordinates:Coordinates)=>['pollution',coordinates] as const,
 };
+
+export function usePollutionQuery(coordinates:Coordinates|null){
+	return useQuery({
+		queryKey: WEATHER_KEYS.pollution(coordinates?? {lat: 0, lon: 0}),
+		queryFn:()=>coordinates?weatherAPI.getPollutionData(coordinates):null,
+		enabled:!!coordinates,
+	});
+}
 
 export function useWeatherQuery(coordinates:Coordinates|null){
 	return useQuery({

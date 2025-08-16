@@ -3,15 +3,11 @@ import {AlertTriangle, MapPin, RefreshCw} from "lucide-react";
 import {useGeolocation} from "@/hooks/useGeolocation.ts";
 import LoadingSkeleton from "@/components/loading-skeleton.tsx";
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
-import {useForecastQuery, useReverseGeocodeQuery, useWeatherQuery} from "@/hooks/useWeather.ts";
-import CurrentWeather from "@/components/currentWeather.tsx";
-import HourlyTemperature from "@/components/hourlyTemperature.tsx";
-import WeatherDetails from "@/components/weatherDetails";
-import WeatherForecast from "@/components/weatherForecast";
+import {useForecastQuery, usePollutionQuery, useReverseGeocodeQuery, useWeatherQuery} from "@/hooks/useWeather.ts";
 import FavouriteCities from "@/components/favouriteCities.tsx";
 import RefreshLocationButton from "@/components/refreshLocationButton.tsx";
-import {motion} from "motion/react";
-import SunDetails from "@/components/sunDetails.tsx";
+import {useCallback, useEffect} from "react";
+import {MotionCurrentWeather, MotionHourlyTemperature,MotionPollutionDetails, MotionSunDetails, MotionWeatherDetails, MotionWeatherForecast} from "@/components/motionComponents.tsx";
 
 function DashboardPage() {
 
@@ -20,15 +16,27 @@ function DashboardPage() {
 	const locationQuery = useReverseGeocodeQuery(coordinates);
 	const weatherQuery = useWeatherQuery(coordinates);
 	const forecastQuery = useForecastQuery(coordinates);
+	const pollutionQuery = usePollutionQuery(coordinates);
 
-	function handleRefresh() {
+	const handleRefresh = useCallback(() => {
 		getLocation();
 		if (coordinates) {
 			weatherQuery.refetch();
 			forecastQuery.refetch();
 			locationQuery.refetch();
+			pollutionQuery.refetch();
 		}
-	}
+	}, [getLocation, coordinates, weatherQuery, forecastQuery, locationQuery,pollutionQuery]);
+
+	useEffect(() => {
+		const interval = setInterval(() => {
+			console.log('Refreshing location data...');
+			handleRefresh();
+		}, 15 * 60 * 1000);
+
+		return () => clearInterval(interval);
+	}, [coordinates, handleRefresh]);
+
 
 	if (isLoading) {
 		return <LoadingSkeleton/>
@@ -77,15 +85,9 @@ function DashboardPage() {
 		</Alert>);
 	}
 
-	if (!weatherQuery.data || !forecastQuery.data) {
+	if (!weatherQuery.data || !forecastQuery.data || !pollutionQuery.data) {
 		return <LoadingSkeleton/>;
 	}
-
-	const MotionCurrentWeather = motion.create(CurrentWeather);
-	const MotionHourlyTemperature = motion.create(HourlyTemperature);
-	const MotionWeatherDetails = motion.create(WeatherDetails);
-	const MotionWeatherForecast = motion.create(WeatherForecast);
-	const MotionSunDetails=motion.create(SunDetails);
 
 	const fadeIn = (delay: number) => ({
 		initial: {opacity: 0, y: 20},
@@ -111,11 +113,14 @@ function DashboardPage() {
 				</div>
 				<div className={'grid gap-4 md:grid-cols-2 items-start'}>
 					<div className={'flex flex-col gap-6'}>
-						<MotionSunDetails {...fadeIn(0.6)} sunriseTime={weatherQuery.data.sys.sunrise} sunsetTime={weatherQuery.data.sys.sunset}/>
-						<MotionWeatherDetails {...fadeIn(0.7)} data={weatherQuery.data}/>
+						<MotionSunDetails whileHover={{scale: 1.01}} {...fadeIn(0.6)}
+						                  sunriseTime={weatherQuery.data.sys.sunrise}
+						                  sunsetTime={weatherQuery.data.sys.sunset}/>
+						<MotionWeatherDetails whileHover={{scale: 1.01}} {...fadeIn(0.7)} data={weatherQuery.data}/>
 					</div>
-					<MotionWeatherForecast {...fadeIn(0.8)} data={forecastQuery.data}/>
+					<MotionWeatherForecast whileHover={{scale: 1.01}} {...fadeIn(0.8)} data={forecastQuery.data}/>
 				</div>
+				<MotionPollutionDetails whileHover={{scale: 1.01}} {...fadeIn(1)} data={pollutionQuery.data}/>
 			</div>
 		</div>
 	);

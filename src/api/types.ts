@@ -67,3 +67,19 @@ export interface ForecastData {
 		sunset: number;
 	};
 }
+
+export interface PollutionData {
+	list: Array<{
+		main: {
+			aqi: number;
+		};
+		components: {
+			pm2_5: number;
+			pm10: number;
+			no2: number;
+			o3: number;
+			so2: number;
+			co: number;
+		};
+	}>;
+}

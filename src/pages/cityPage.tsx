@@ -1,15 +1,10 @@
 import {useParams, useSearchParams} from "react-router";
-import {useForecastQuery, useWeatherQuery} from "@/hooks/useWeather.ts";
+import {useForecastQuery, usePollutionQuery, useWeatherQuery} from "@/hooks/useWeather.ts";
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
 import {AlertTriangle} from "lucide-react";
 import LoadingSkeleton from "@/components/loading-skeleton.tsx";
-import CurrentWeather from "@/components/currentWeather.tsx";
-import HourlyTemperature from "@/components/hourlyTemperature.tsx";
-import WeatherDetails from "@/components/weatherDetails.tsx";
-import WeatherForecast from "@/components/weatherForecast.tsx";
 import FavouriteButton from "@/components/favouriteButton.tsx";
-import {motion} from "motion/react";
-import SunDetails from "@/components/sunDetails.tsx";
+import {MotionCurrentWeather,MotionHourlyTemperature, MotionPollutionDetails,MotionSunDetails,MotionWeatherDetails, MotionWeatherForecast} from "@/components/motionComponents.tsx";
 
 function CityPage() {
 
@@ -22,6 +17,7 @@ function CityPage() {
 
 	const weatherQuery = useWeatherQuery(coordinates);
 	const forecastQuery = useForecastQuery(coordinates);
+	const pollutionQuery=usePollutionQuery(coordinates);
 
 	if (weatherQuery.error || forecastQuery.error) {
 		return (
@@ -36,15 +32,9 @@ function CityPage() {
 		);
 	}
 
-	if (!weatherQuery.data || !forecastQuery.data || !params.cityName) {
+	if (!weatherQuery.data || !forecastQuery.data || !params.cityName || !pollutionQuery.data) {
 		return <LoadingSkeleton/>;
 	}
-
-	const MotionCurrentWeather = motion.create(CurrentWeather);
-	const MotionHourlyTemperature = motion.create(HourlyTemperature);
-	const MotionWeatherDetails = motion.create(WeatherDetails);
-	const MotionWeatherForecast = motion.create(WeatherForecast);
-	const MotionSunDetails=motion.create(SunDetails);
 
 	const fadeIn = (delay: number) => ({
 		initial: {opacity: 0, y: 20},
@@ -67,11 +57,12 @@ function CityPage() {
 				</div>
 				<div className={'grid gap-6 md:grid-cols-2 items-start'}>
 					<div className={'flex flex-col gap-6'}>
-						<MotionSunDetails {...fadeIn(0.6)} sunriseTime={weatherQuery.data.sys.sunrise} sunsetTime={weatherQuery.data.sys.sunset}/>
-						<MotionWeatherDetails {...fadeIn(0.7)} data={weatherQuery.data}/>
+						<MotionSunDetails whileHover={{scale:1.01}} {...fadeIn(0.6)} sunriseTime={weatherQuery.data.sys.sunrise} sunsetTime={weatherQuery.data.sys.sunset}/>
+						<MotionWeatherDetails whileHover={{scale:1.01}} {...fadeIn(0.7)} data={weatherQuery.data}/>
 					</div>
-					<MotionWeatherForecast {...fadeIn(0.8)} data={forecastQuery.data}/>
+					<MotionWeatherForecast whileHover={{scale:1.01}} {...fadeIn(0.8)} data={forecastQuery.data}/>
 				</div>
+				<MotionPollutionDetails whileHover={{scale: 1.01}} {...fadeIn(1)} data={pollutionQuery.data}/>
 			</div>
 		</div>
 	);

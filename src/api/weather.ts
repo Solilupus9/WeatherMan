@@ -1,5 +1,5 @@
 import {API_CONFIG} from "@/api/config.ts";
-import type {Coordinates, ForecastData, GeocodingResponse, WeatherData} from "@/api/types.ts";
+import type {Coordinates, ForecastData, GeocodingResponse, PollutionData, WeatherData} from "@/api/types.ts";
 
 class WeatherAPI {
 	private createUrl(endpoint: string, params: Record<string, string | number>) {
@@ -19,6 +19,15 @@ class WeatherAPI {
 			throw new Error(`Weather API error! status: ${response.status}`);
 		}
 		return response.json();
+	}
+
+	async getPollutionData({lat, lon}: Coordinates):Promise<PollutionData>{
+		const url = this.createUrl(`${API_CONFIG.BASE_URL}/air_pollution`, {
+			lat: lat.toString(),
+			lon: lon.toString(),
+			appid: API_CONFIG.API_KEY,
+		});
+		return this.fetchData<PollutionData>(url);
 	}
 
 	async getCurrentWeather({lat, lon}: Coordinates): Promise<WeatherData> {

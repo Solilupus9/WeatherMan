@@ -32,8 +32,7 @@ function SunDetails({sunsetTime, sunriseTime,ref}: SunDetailsProps) {
 				<div className={'flex gap-4 items-center'}>
 					<div className={'flex flex-col items-center'}>
 						<Sunrise className={'text-yellow-500 size-7 mb-2'}/>
-						<span
-							className={'text-sm text-neutral-400 w-full whitespace-nowrap tracking-tighter'}>{formatTime(sunriseTime)}</span>
+						<span className={'text-sm text-neutral-400 w-full whitespace-nowrap tracking-tighter'}>{formatTime(sunriseTime)}</span>
 					</div>
 					<Slider.Root
 						className="relative flex h-5 flex-1 touch-none select-none items-center"
@@ -55,7 +54,7 @@ function SunDetails({sunsetTime, sunriseTime,ref}: SunDetailsProps) {
 										whileHover={{scale: 1.1}}
 										src={'/slider-sun.png'}
 										alt={'Slider image'}
-										className={'size-6'}
+										className={'size-7'}
 									/>
 								</TooltipTrigger>
 								<TooltipContent className={'bg-background shadow-sm p-2 flex items-center flex-col'}>
@@ -65,7 +64,7 @@ function SunDetails({sunsetTime, sunriseTime,ref}: SunDetailsProps) {
 											const secondsLeft = Math.max(0, sunsetTime - now);
 											const hours = Math.floor(secondsLeft / 3600);
 											const minutes = Math.floor((secondsLeft % 3600) / 60);
-											return `${hours}h ${minutes}m`;
+											return hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
 										})()}
 									</span>
 								</TooltipContent>
@@ -75,8 +74,7 @@ function SunDetails({sunsetTime, sunriseTime,ref}: SunDetailsProps) {
 
 					<div className={'flex flex-col items-center'}>
 						<Sunset className={'text-orange-500 size-7 mb-2'}/>
-						<span
-							className={'text-sm text-neutral-400 w-full whitespace-nowrap tracking-tighter'}>{formatTime(sunsetTime)}</span>
+						<span className={'text-sm text-neutral-400 w-full whitespace-nowrap tracking-tighter'}>{formatTime(sunsetTime)}</span>
 					</div>
 				</div>
 			</CardContent>
