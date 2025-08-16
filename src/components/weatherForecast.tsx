@@ -47,12 +47,12 @@ function WeatherForecast({data,ref}: WeatherForecastTypes) {
 	const nextDays = Object.values(dailyForecasts).slice(0, 6);
 
 	return (
-		<Card ref={ref}>
+		<Card ref={ref} className={'h-full'}>
 			<CardHeader>
 				<CardTitle>Five-day Forecast</CardTitle>
 			</CardHeader>
-			<CardContent>
-				<div className={'grid gap-4'}>
+			<CardContent className={'h-full'}>
+				<div className={'grid gap-4 h-full'}>
 					{nextDays.map((day) => (
 						<motion.div
 							whileHover={{

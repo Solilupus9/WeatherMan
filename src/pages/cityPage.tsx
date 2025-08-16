@@ -4,7 +4,14 @@ import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
 import {AlertTriangle} from "lucide-react";
 import LoadingSkeleton from "@/components/loading-skeleton.tsx";
 import FavouriteButton from "@/components/favouriteButton.tsx";
-import {MotionCurrentWeather,MotionHourlyTemperature, MotionPollutionDetails,MotionSunDetails,MotionWeatherDetails, MotionWeatherForecast} from "@/components/motionComponents.tsx";
+import {
+	MotionCurrentWeather,
+	MotionHourlyTemperature,
+	MotionPollutionDetails,
+	MotionSunDetails,
+	MotionWeatherDetails,
+	MotionWeatherForecast
+} from "@/components/motionComponents.tsx";
 
 function CityPage() {
 
@@ -17,7 +24,7 @@ function CityPage() {
 
 	const weatherQuery = useWeatherQuery(coordinates);
 	const forecastQuery = useForecastQuery(coordinates);
-	const pollutionQuery=usePollutionQuery(coordinates);
+	const pollutionQuery = usePollutionQuery(coordinates);
 
 	if (weatherQuery.error || forecastQuery.error) {
 		return (
@@ -57,12 +64,16 @@ function CityPage() {
 				</div>
 				<div className={'grid gap-6 md:grid-cols-2 items-start'}>
 					<div className={'flex flex-col gap-6'}>
-						<MotionSunDetails whileHover={{scale:1.01}} {...fadeIn(0.6)} sunriseTime={weatherQuery.data.sys.sunrise} sunsetTime={weatherQuery.data.sys.sunset}/>
-						<MotionWeatherDetails whileHover={{scale:1.01}} {...fadeIn(0.7)} data={weatherQuery.data}/>
+						<MotionSunDetails whileHover={{scale: 1.01}} {...fadeIn(0.6)}
+						                  sunriseTime={weatherQuery.data.sys.sunrise}
+						                  sunsetTime={weatherQuery.data.sys.sunset}/>
+						<MotionWeatherDetails whileHover={{scale: 1.01}} {...fadeIn(0.7)} data={weatherQuery.data}/>
 					</div>
-					<MotionWeatherForecast whileHover={{scale:1.01}} {...fadeIn(0.8)} data={forecastQuery.data}/>
+					<MotionWeatherForecast whileHover={{scale: 1.01}} {...fadeIn(0.8)} data={forecastQuery.data}/>
 				</div>
-				<MotionPollutionDetails whileHover={{scale: 1.01}} {...fadeIn(1)} data={pollutionQuery.data}/>
+				<div className={'w-full'}>
+					<MotionPollutionDetails whileHover={{scale: 1.01}} {...fadeIn(1)} data={pollutionQuery.data}/>
+				</div>
 			</div>
 		</div>
 	);

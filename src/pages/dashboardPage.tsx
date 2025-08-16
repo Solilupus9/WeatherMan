@@ -111,7 +111,7 @@ function DashboardPage() {
 					<MotionCurrentWeather {...fadeIn(0.2)} data={weatherQuery.data} location={locationName}/>
 					<MotionHourlyTemperature {...fadeIn(0.4)} data={forecastQuery.data} isCityTemps={false}/>
 				</div>
-				<div className={'grid gap-4 md:grid-cols-2 items-start'}>
+				<div className={'grid gap-4 md:grid-cols-2'}>
 					<div className={'flex flex-col gap-6'}>
 						<MotionSunDetails whileHover={{scale: 1.01}} {...fadeIn(0.6)}
 						                  sunriseTime={weatherQuery.data.sys.sunrise}
@@ -120,7 +120,9 @@ function DashboardPage() {
 					</div>
 					<MotionWeatherForecast whileHover={{scale: 1.01}} {...fadeIn(0.8)} data={forecastQuery.data}/>
 				</div>
-				<MotionPollutionDetails whileHover={{scale: 1.01}} {...fadeIn(1)} data={pollutionQuery.data}/>
+				<div className={'w-full'}>
+					<MotionPollutionDetails whileHover={{scale: 1.01}} {...fadeIn(1)} data={pollutionQuery.data}/>
+				</div>
 			</div>
 		</div>
 	);
