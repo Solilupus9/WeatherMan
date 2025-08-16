@@ -5,6 +5,7 @@ import DashboardPage from "@/pages/dashboardPage.tsx";
 import CityPage from "@/pages/cityPage.tsx";
 import {QueryClientProvider, QueryClient} from "@tanstack/react-query";
 import {Toaster} from "@/components/ui/sonner.tsx";
+import ErrorPage from "@/components/errorComponent.tsx";
 
 const queryClient = new QueryClient({
 	defaultOptions:{
@@ -24,8 +25,16 @@ function App() {
 		{
 			Component: Layout,
 			children: [
-				{index: true, Component: DashboardPage},
-				{path: '/city/:cityName', Component: CityPage}
+				{
+					index: true,
+					Component: DashboardPage,
+					errorElement:<ErrorPage/>
+				},
+				{
+					path: '/city/:cityName',
+					Component: CityPage,
+					errorElement:<ErrorPage/>
+				}
 			]
 		}
 	]);
