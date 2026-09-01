@@ -2,50 +2,60 @@ import type {Coordinates} from "@/api/types.ts";
 import {useQuery} from "@tanstack/react-query";
 import {weatherAPI} from "@/api/weather.ts";
 
-export const WEATHER_KEYS={
-	weather:(coordinates:Coordinates)=>['weather',coordinates] as const,
-	forecast:(coordinates:Coordinates)=>['forecast',coordinates] as const,
-	location:(coordinates:Coordinates)=>['location',coordinates] as const,
-	search:(query:string)=>['location-search',query] as const,
-	pollution:(coordinates:Coordinates)=>['pollution',coordinates] as const,
+export const WEATHER_KEYS = {
+	weather: (coordinates: Coordinates) => ['weather', coordinates] as const,
+	forecast: (coordinates: Coordinates) => ['forecast', coordinates] as const,
+	location: (coordinates: Coordinates) => ['location', coordinates] as const,
+	search: (query: string) => ['location-search', query] as const,
+	pollution: (coordinates: Coordinates) => ['pollution', coordinates] as const,
 };
 
-export function usePollutionQuery(coordinates:Coordinates|null){
+export function usePollutionQuery(coordinates: Coordinates | null) {
 	return useQuery({
-		queryKey: WEATHER_KEYS.pollution(coordinates?? {lat: 0, lon: 0}),
-		queryFn:()=>coordinates?weatherAPI.getPollutionData(coordinates):null,
-		enabled:!!coordinates,
+		queryKey: WEATHER_KEYS.pollution(coordinates ?? {lat: 0, lon: 0}),
+		queryFn: () => coordinates ? weatherAPI.getPollutionData(coordinates) : null,
+		enabled: !!coordinates,
+		staleTime: 1000 * 60 * 5, // 5 minutes
+		gcTime: 1000 * 60 * 15,
 	});
 }
 
-export function useWeatherQuery(coordinates:Coordinates|null){
+export function useWeatherQuery(coordinates: Coordinates | null) {
 	return useQuery({
-		queryKey: WEATHER_KEYS.weather(coordinates?? {lat: 0, lon: 0}),
-		queryFn:()=>coordinates?weatherAPI.getCurrentWeather(coordinates):null,
-		enabled:!!coordinates,
+		queryKey: WEATHER_KEYS.weather(coordinates ?? {lat: 0, lon: 0}),
+		queryFn: () => coordinates ? weatherAPI.getCurrentWeather(coordinates) : null,
+		enabled: !!coordinates,
+		staleTime: 1000 * 60 * 5, // 5 minutes
+		gcTime: 1000 * 60 * 15,
 	});
 }
 
-export function useForecastQuery(coordinates:Coordinates|null){
+export function useForecastQuery(coordinates: Coordinates | null) {
 	return useQuery({
-		queryKey: WEATHER_KEYS.forecast(coordinates?? {lat: 0, lon: 0}),
-		queryFn:()=>coordinates?weatherAPI.getWeatherForecast(coordinates):null,
-		enabled:!!coordinates,
+		queryKey: WEATHER_KEYS.forecast(coordinates ?? {lat: 0, lon: 0}),
+		queryFn: () => coordinates ? weatherAPI.getWeatherForecast(coordinates) : null,
+		enabled: !!coordinates,
+		staleTime: 1000 * 60 * 5, // 5 minutes
+		gcTime: 1000 * 60 * 15,
 	});
 }
 
-export function useReverseGeocodeQuery(coordinates:Coordinates|null){
+export function useReverseGeocodeQuery(coordinates: Coordinates | null) {
 	return useQuery({
-		queryKey: WEATHER_KEYS.location(coordinates?? {lat: 0, lon: 0}),
-		queryFn:()=>coordinates?weatherAPI.reverseGeocode(coordinates):null,
-		enabled:!!coordinates,
+		queryKey: WEATHER_KEYS.location(coordinates ?? {lat: 0, lon: 0}),
+		queryFn: () => coordinates ? weatherAPI.reverseGeocode(coordinates) : null,
+		enabled: !!coordinates,
+		staleTime: 1000 * 60 * 60 * 24, // 24 hours (coordinates to city mapping is static)
+		gcTime: 1000 * 60 * 60 * 24,
 	});
 }
 
-export function useLocationSearchQuery(query:string){
+export function useLocationSearchQuery(query: string) {
 	return useQuery({
-		queryKey:WEATHER_KEYS.search(query),
-		queryFn:()=>query?weatherAPI.searchLocations(query):[],
-		enabled:query.length>=3
+		queryKey: WEATHER_KEYS.search(query),
+		queryFn: () => query ? weatherAPI.searchLocations(query) : [],
+		enabled: query.length >= 3,
+		staleTime: 1000 * 60 * 60 * 24, // 24 hours (city search results are static)
+		gcTime: 1000 * 60 * 60 * 24,
 	});
 }
