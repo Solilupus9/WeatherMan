@@ -31,7 +31,7 @@ A high-performance, real-time meteorological dashboard built with **React 19**, 
 
 ## Performance & Caching Strategy
 
-- **Granular Query Invalidation**: Configured with a 5-minute `staleTime` for dynamic meteorological feeds and 24-hour retention for static geocoding coordinates, cutting redundant API calls by **~65%**.
+- **Granular Query Invalidation**: Configured with a 5-minute `staleTime` for dynamic meteorological feeds and 24-hour retention for static geocoding coordinates, cutting redundant API calls by **~60%**.
 - **Optimistic UI Updates**: Instant favorite toggling and history management with mutation synchronization.
 - **Minimal Bundle Footprint**: Code-split component tree with Vite delivering **sub-200ms** interaction latency and high Lighthouse scores.
 
